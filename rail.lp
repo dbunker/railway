@@ -1,31 +1,44 @@
-
-% cell((X, Y), TYPE)            at (X, Y) with track type TYPE
+% cell((X, Y), TYPE)
+% track at (X, Y) with track type TYPE
 
 % TYPE:
 % vertical: 32800
 % horizontal: 1025
-% diamond cross: 33825
+% type 5 double-slip switch west-east, north-south, north-east, west-south: 38505
 
-% start(ID, (X, Y), DEP, DIR)   train ID starts at (X, Y) with earliest departure time DEP with direction DIR ({n, s, e, w})
+% start(ID, (X, Y), DEP, DIR)
+% train ID starts at (X, Y) with earliest departure time DEP with direction DIR ({n, s, e, w})
 
-% end(ID, (X,Y), ARR)           train ID ends at (X, Y) at latest arrival time ARR
+% end(ID, (X,Y), ARR)
+% train ID ends at (X, Y) at latest arrival time ARR
 
-% train(ID, (X, Y), T, DIR)     train ID is at (X, Y) at time T going direction DIR
+% train(ID, (X, Y), T, DIR)
+% train ID is at (X, Y) at time T going direction DIR
 
 % edge((X_START, Y_START), (X_END, Y_END), DIR_START, DIR_END)
 % train at (X_START, Y_START) with starting direction DIR_START can move to (X_END, Y_END) with ending direction DIR_END
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% double slip switch in middle
 % 0 | 0 
 % - + -
 % 0 | 0
 
-% 0 B 0 
-% A + -
-% 0 | 0
+% train A to bottom middle
+% train B to right middle
 
-#const steps=4.
+% 0  B  0 
+% A  +  BE
+% 0  AE 0
+
+% expected to have 4 stable models:
+% A goes first doesn't reverse
+% A goes first and reverses
+% B goes first doesn't reverse
+% B goes first and reverses
+
+#const steps=3.
 
 cell((0, 1), 1025).
 cell((2, 1), 1025).
@@ -33,17 +46,15 @@ cell((2, 1), 1025).
 cell((1, 0), 32800).
 cell((1, 2), 32800).
 
-cell((1, 1), 33825).
+cell((1, 1), 38505).
 
 start(train_A, (0, 1), 0, e).
-end(train_A, (2, 1), 2).
+end(train_A, (1, 2), 3).
 
-start(train_B, (1, 0), 1, s).
-end(train_B, (1, 2), 3).
+start(train_B, (1, 0), 0, s).
+end(train_B, (2, 1), 3).
 
 #show train/4.
-
-% #show edge/4.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % initial and end train positions
@@ -59,24 +70,56 @@ train(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
 % create edges from cells
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% it is assumed that being able to exit out of a cell implies entering into it
+% where the train can go is dictated by it's assigned direction entering into the node
+% ex. moving north folowing a track moving east moves into the cell and changes direction east 
+
+% each of these is followed by the possibility of using the track to reverse direction
+
 % there is an edge from (X, Y) to (X+1, Y) assuming the train is going direction east
 % if the cells are next to eachother and it is a horrizontal track (1025)
-edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 1025).
 
-% horizontal track west
+% horizontal track west-east
+edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 1025).
 edge((X, Y), (X-1, Y), w, w) :- cell((X, Y), _), cell((X-1, Y), 1025).
 
-% vertical track south
-edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 32800).
+% reverse
+edge((X, Y), (X, Y), e, w) :- cell((X, Y), 1025).
+edge((X, Y), (X, Y), w, e) :- cell((X, Y), 1025).
 
-% vertical track north
+% vertical track north-south
+edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 32800).
 edge((X, Y), (X, Y-1), n, n) :- cell((X, Y), _), cell((X, Y-1), 32800).
 
-% diamond cross, west-east north-south
-edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 33825).
-edge((X, Y), (X-1, Y), w, w) :- cell((X, Y), _), cell((X-1, Y), 33825).
-edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 33825).
-edge((X, Y), (X, Y-1), n, n) :- cell((X, Y), _), cell((X, Y-1), 33825).
+% reverse
+edge((X, Y), (X, Y), s, n) :- cell((X, Y), 32800).
+edge((X, Y), (X, Y), n, s) :- cell((X, Y), 32800).
+
+% type-5 double-slip switch, west-east, north-south, north-east, west-south
+edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 38505).
+edge((X, Y), (X-1, Y), w, w) :- cell((X, Y), _), cell((X-1, Y), 38505).
+
+edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 38505).
+edge((X, Y), (X, Y-1), n, n) :- cell((X, Y), _), cell((X, Y-1), 38505).
+
+edge((X, Y), (X, Y+1), s, e) :- cell((X, Y), _), cell((X, Y+1), 38505).
+edge((X, Y), (X-1, Y), w, n) :- cell((X, Y), _), cell((X-1, Y), 38505).
+
+edge((X, Y), (X+1, Y), e, s) :- cell((X, Y), _), cell((X+1, Y), 38505).
+edge((X, Y), (X, Y-1), n, w) :- cell((X, Y), _), cell((X, Y-1), 38505).
+
+% reverse
+edge((X, Y), (X, Y), e, w) :- cell((X, Y), 38505).
+edge((X, Y), (X, Y), w, e) :- cell((X, Y), 38505).
+
+edge((X, Y), (X, Y), s, n) :- cell((X, Y), 38505).
+edge((X, Y), (X, Y), n, s) :- cell((X, Y), 38505).
+
+edge((X, Y), (X, Y), e, n) :- cell((X, Y), 38505).
+edge((X, Y), (X, Y), n, e) :- cell((X, Y), 38505).
+
+edge((X, Y), (X, Y), w, s) :- cell((X, Y), 38505).
+edge((X, Y), (X, Y), s, w) :- cell((X, Y), 38505).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % train movement
