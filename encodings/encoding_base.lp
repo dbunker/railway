@@ -34,12 +34,12 @@ train(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
 
 % it is assumed that being able to exit out of a cell implies entering into it
 % where the train can go is dictated by it's assigned direction entering into the node
-% ex. moving north folowing a track moving east moves into the cell and changes direction east
+% ex. moving north following a track moving east moves into the cell and changes direction east
 
 % each of these is followed by the possibility of using the track to reverse direction
 
 % there is an edge from (X, Y) to (X+1, Y) assuming the train is going direction east
-% if the cells are next to eachother and it is a horrizontal track (1025)
+% if the cells are next to each-other and it is a horizontal track (1025)
 
 #include "./track_edges/all.lp".
 
@@ -56,7 +56,10 @@ dir(n). dir(s). dir(e). dir(w).
 { train(ID, (X, Y), T, DIR) : cell((X, Y), _), dir(DIR) } = 1 :- time(T), train(ID).
 
 % the only way for a train to change cells is if there is an edge to the other cell with associated start and end directions 
-:- train(ID, POS, T, DIR), train(ID, NEXT_POS, T+1, NEXT_DIR), not edge(POS, NEXT_POS, DIR, NEXT_DIR), (POS, DIR) != (NEXT_POS, NEXT_DIR).
+:- train(ID, PREV_POS, T,   PREV_DIR),
+   train(ID, NEXT_POS, T+1, NEXT_DIR),
+   not edge(PREV_POS, NEXT_POS, PREV_DIR, NEXT_DIR),
+   (PREV_POS, PREV_DIR) != (NEXT_POS, NEXT_DIR).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % train movement with other trains
