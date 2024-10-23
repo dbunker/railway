@@ -23,4 +23,4 @@ pip install -r requirements.txt
 
 ### Track-Types
 
-![All possible different track types](https://imgur.com/Q72tAI8)
+![All possible different track types](https://imgur.com/Q72tAI8.png)
