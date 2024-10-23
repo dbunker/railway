@@ -34,54 +34,14 @@ train(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
 
 % it is assumed that being able to exit out of a cell implies entering into it
 % where the train can go is dictated by it's assigned direction entering into the node
-% ex. moving north folowing a track moving east moves into the cell and changes direction east 
+% ex. moving north folowing a track moving east moves into the cell and changes direction east
 
 % each of these is followed by the possibility of using the track to reverse direction
 
 % there is an edge from (X, Y) to (X+1, Y) assuming the train is going direction east
 % if the cells are next to eachother and it is a horrizontal track (1025)
 
-% horizontal track west-east
-edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 1025).
-edge((X, Y), (X-1, Y), w, w) :- cell((X, Y), _), cell((X-1, Y), 1025).
-
-% reverse
-edge((X, Y), (X, Y), e, w) :- cell((X, Y), 1025).
-edge((X, Y), (X, Y), w, e) :- cell((X, Y), 1025).
-
-% vertical track north-south
-edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 32800).
-edge((X, Y), (X, Y-1), n, n) :- cell((X, Y), _), cell((X, Y-1), 32800).
-
-% reverse
-edge((X, Y), (X, Y), s, n) :- cell((X, Y), 32800).
-edge((X, Y), (X, Y), n, s) :- cell((X, Y), 32800).
-
-% type-5 double-slip switch, west-east, north-south, north-east, west-south
-edge((X, Y), (X+1, Y), e, e) :- cell((X, Y), _), cell((X+1, Y), 38505).
-edge((X, Y), (X-1, Y), w, w) :- cell((X, Y), _), cell((X-1, Y), 38505).
-
-edge((X, Y), (X, Y+1), s, s) :- cell((X, Y), _), cell((X, Y+1), 38505).
-edge((X, Y), (X, Y-1), n, n) :- cell((X, Y), _), cell((X, Y-1), 38505).
-
-edge((X, Y), (X, Y+1), s, e) :- cell((X, Y), _), cell((X, Y+1), 38505).
-edge((X, Y), (X-1, Y), w, n) :- cell((X, Y), _), cell((X-1, Y), 38505).
-
-edge((X, Y), (X+1, Y), e, s) :- cell((X, Y), _), cell((X+1, Y), 38505).
-edge((X, Y), (X, Y-1), n, w) :- cell((X, Y), _), cell((X, Y-1), 38505).
-
-% reverse
-edge((X, Y), (X, Y), e, w) :- cell((X, Y), 38505).
-edge((X, Y), (X, Y), w, e) :- cell((X, Y), 38505).
-
-edge((X, Y), (X, Y), s, n) :- cell((X, Y), 38505).
-edge((X, Y), (X, Y), n, s) :- cell((X, Y), 38505).
-
-edge((X, Y), (X, Y), e, n) :- cell((X, Y), 38505).
-edge((X, Y), (X, Y), n, e) :- cell((X, Y), 38505).
-
-edge((X, Y), (X, Y), w, s) :- cell((X, Y), 38505).
-edge((X, Y), (X, Y), s, w) :- cell((X, Y), 38505).
+#include "./track_edges/all.lp".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % train movement
