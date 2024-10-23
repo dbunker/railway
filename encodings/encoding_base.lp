@@ -67,4 +67,4 @@ dir(n). dir(s). dir(e). dir(w).
 :- train(ID_A, POS, T, _), train(ID_B, POS, T, _), ID_A != ID_B.
 
 % trains cannot pass each other over the same edge (regardless of edge direction) (i.e. swap places)
-:- train(ID_A, POS_A, T, _), train(ID_B, POS_B, T, _), train(ID_A, ID_B, T+1, _), train(ID_B, ID_A, T+1, _), edge(POS_A, POS_B, _, _).
+:- train(ID_A, POS_A, T, _), train(ID_B, POS_B, T, _), train(ID_A, POS_B, T+1, _), train(ID_B, POS_A, T+1, _).
