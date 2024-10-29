@@ -1,0 +1,2 @@
+clingo>=5.7.1
+flatland-rl>=4.0.3
