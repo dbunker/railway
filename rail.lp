@@ -39,6 +39,7 @@ train(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
 
 % train ID must be at ending (X, Y) by latest departure T
 :- not train(ID, (X, Y), T, _), end(ID, (X, Y), T).
+% TODO: I think this encoding right now doesn't allow for earlier arrivals since the train should then disappear before the latest departure
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create individual tracks from cells
@@ -86,6 +87,8 @@ cell((X, Y), 0, 0, 1, 1, 0, 0) :- cell((X, Y), 16458).
 cell((X, Y), 0, 0, 1, 0, 1, 0) :- cell((X, Y), 2136).
 cell((X, Y), 0, 0, 0, 0, 1, 1) :- cell((X, Y), 6672).
 
+% TODO: What do we do with dead-end track types? Is it okay to just skip them?
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create edges from cells
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,6 +101,8 @@ cell((X, Y), 0, 0, 0, 0, 1, 1) :- cell((X, Y), 6672).
 
 % there is an edge from (X, Y) to (X+1, Y) assuming the train is going direction east
 % if the cells are next to eachother and it is a horizontal track (1025)
+
+% TODO: I don't know if these rule bodies really make much sense? I would probably always use (X,Y) in body.
 
 % vertical track north-south
 edge((X, Y), (X, Y+1), s, s) :- cell((X, Y+1), 1, _, _, _, _, _).
@@ -132,7 +137,7 @@ time(0..steps).
 dir(n). dir(s). dir(e). dir(w).
 
 % train ID must exist at a single time T and (X, Y) and going in a single direction DIR between departure and arrival times
-{ train(ID, (X, Y), T, DIR) : cell((X, Y), TRACK), dir(DIR), TRACK != 0 } = 1 :- 
+{ train(ID, (X, Y), T, DIR) : cell((X, Y), TRACK), dir(DIR), TRACK != 0 } = 1 :-
     time(T), 
     start(ID, _, DEP, _), 
     end(ID, _, ARR), 
@@ -165,6 +170,9 @@ dir(n). dir(s). dir(e). dir(w).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % train actions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO: I think this is okay but in this case the actions are generated afterwards. Maybe it makes more sense to make
+% TODO: a choice for the next action to take and then translate this into movements (less choices).
 
 % go forward
 action(train(ID), move_forward, T) :- 
