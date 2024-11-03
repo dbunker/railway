@@ -28,8 +28,10 @@ cell((0, 2), 0).
 cell((1, 2), 32800).
 cell((2, 2), 0).
 
+train(train_A).
 start(train_A, (0, 1), 0, e).
 end(train_A, (1, 2), 3).
 
+train(train_B).
 start(train_B, (1, 0), 0, s).
 end(train_B, (2, 1), 3).
