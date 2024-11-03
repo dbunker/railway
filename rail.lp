@@ -101,31 +101,29 @@ cell((X, Y), 0, 0, 0, 0, 1, 1) :- cell((X, Y), 6672).
 % there is an edge from (X, Y) to (X+1, Y) assuming the train is going direction east
 % if the cells are next to eachother and it is a horizontal track (1025)
 
-% TODO: I don't know if these rule bodies really make much sense? I would probably always use (X,Y) in body.
-
 % vertical track north-south
-edge((X, Y), (X, Y+1), s, s) :- cell((X, Y+1), 1, _, _, _, _, _).
-edge((X, Y), (X, Y-1), n, n) :- cell((X, Y-1), 1, _, _, _, _, _).
+edge((X, Y-1), (X, Y), s, s) :- cell((X, Y), 1, _, _, _, _, _).
+edge((X, Y+1), (X, Y), n, n) :- cell((X, Y), 1, _, _, _, _, _).
 
 % horizontal track west-east
-edge((X, Y), (X+1, Y), e, e) :- cell((X+1, Y), _, 1, _, _, _, _).
-edge((X, Y), (X-1, Y), w, w) :- cell((X-1, Y), _, 1, _, _, _, _).
+edge((X-1, Y), (X, Y), e, e) :- cell((X, Y), _, 1, _, _, _, _).
+edge((X+1, Y), (X, Y), w, w) :- cell((X, Y), _, 1, _, _, _, _).
 
 % turn east-north
-edge((X, Y), (X, Y+1), s, e) :- cell((X, Y+1), _, _, 1, _, _, _).
-edge((X, Y), (X-1, Y), w, n) :- cell((X-1, Y), _, _, 1, _, _, _).
+edge((X, Y-1), (X, Y), s, e) :- cell((X, Y), _, _, 1, _, _, _).
+edge((X+1, Y), (X, Y), w, n) :- cell((X, Y), _, _, 1, _, _, _).
 
 % turn east-south
-edge((X, Y), (X, Y-1), n, e) :- cell((X, Y-1), _, _, _, 1, _, _).
-edge((X, Y), (X-1, Y), w, s) :- cell((X-1, Y), _, _, _, 1, _, _).
+edge((X, Y+1), (X, Y), n, e) :- cell((X, Y), _, _, _, 1, _, _).
+edge((X+1, Y), (X, Y), w, s) :- cell((X, Y), _, _, _, 1, _, _).
 
 % turn west-north
-edge((X, Y), (X, Y+1), s, w) :- cell((X, Y+1), _, _, _, _, 1, _).
-edge((X, Y), (X+1, Y), e, n) :- cell((X+1, Y), _, _, _, _, 1, _).
+edge((X, Y-1), (X, Y), s, w) :- cell((X, Y), _, _, _, _, 1, _).
+edge((X-1, Y), (X, Y), e, n) :- cell((X, Y), _, _, _, _, 1, _).
 
 % turn west-south
-edge((X, Y), (X+1, Y), e, s) :- cell((X+1, Y), _, _, _, _, _, 1).
-edge((X, Y), (X, Y-1), n, w) :- cell((X, Y-1), _, _, _, _, _, 1).
+edge((X-1, Y), (X, Y), e, s) :- cell((X, Y), _, _, _, _, _, 1).
+edge((X, Y+1), (X, Y), n, w) :- cell((X, Y), _, _, _, _, _, 1).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % train movement
