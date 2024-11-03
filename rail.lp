@@ -34,12 +34,11 @@
 % initial and end train positions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% train ID must be at starting (X, Y) going direction DIR at earliest departure T
-train(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
+% train ID must be at starting (X, Y) going direction DIR at ACTUAL_DEP
+train(ID, (X, Y), ACTUAL_DEP, DIR) :- start(ID, (X, Y), _, DIR), actual_start(ID, ACTUAL_DEP).
 
-% train ID must be at ending (X, Y) by latest departure T
-:- not train(ID, (X, Y), T, _), end(ID, (X, Y), T).
-% TODO: I think this encoding right now doesn't allow for earlier arrivals since the train should then disappear before the latest departure
+% train ID must be at ending (X, Y) by actual arrival ACTUAL_ARR
+:- not train(ID, (X, Y), ACTUAL_ARR, _), end(ID, (X, Y), _), actual_end(ID, ACTUAL_ARR).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % create individual tracks from cells
@@ -134,20 +133,47 @@ edge((X, Y), (X, Y-1), n, w) :- cell((X, Y-1), _, _, _, _, _, 1).
 
 % initialization
 time(0..steps).
+train(ID) :- start(ID, _, _, _).
 dir(n). dir(s). dir(e). dir(w).
 
+% #show actual_start/2.
+% #show actual_end/2.
+% #show train_exists/2.
+
+% train only exists upon leaving train station and stops existing once arrived
+% define single departure time
+{ actual_start(ID, ACTUAL_DEP) :
+    time(ACTUAL_DEP),
+
+    start(ID, _, DEP, _),
+    DEP <= ACTUAL_DEP
+
+} = 1 :- train(ID).
+
+% define single arrival time after departure
+{ actual_end(ID, ACTUAL_ARR) :
+    time(ACTUAL_ARR),
+
+    end(ID, _, ARR),
+    ACTUAL_ARR <= ARR,
+
+    actual_start(ID, ACTUAL_DEP),
+    ACTUAL_DEP <= ACTUAL_ARR
+
+} = 1 :- train(ID).
+
+% train exists in between
+train_exists(ID, ACTUAL_DEP..ACTUAL_ARR) :-
+    actual_start(ID, ACTUAL_DEP),
+    actual_end(ID, ACTUAL_ARR).
+
 % train ID must exist at a single time T and (X, Y) and going in a single direction DIR between departure and arrival times
-{ train(ID, (X, Y), T, DIR) : cell((X, Y), TRACK), dir(DIR), TRACK != 0 } = 1 :-
-    time(T), 
-    start(ID, _, DEP, _), 
-    end(ID, _, ARR), 
-    T >= DEP, 
-    T <= ARR.
+{ train(ID, (X, Y), T, DIR) : cell((X, Y), TRACK), dir(DIR), TRACK != 0 } = 1 :- train_exists(ID, T).
 
 % the only way for a train to change cells is if there is an edge to the other cell with associated start and end directions 
-:-  train(ID, POS, T, DIR), 
-    train(ID, NEXT_POS, T+1, NEXT_DIR), 
-    not edge(POS, NEXT_POS, DIR, NEXT_DIR), 
+:-  train(ID, POS, T, DIR),
+    train(ID, NEXT_POS, T+1, NEXT_DIR),
+    not edge(POS, NEXT_POS, DIR, NEXT_DIR),
     (POS, DIR) != (NEXT_POS, NEXT_DIR).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -195,3 +221,10 @@ action(train(ID), move_right, T) :- train(ID, _, T-1, e), train(ID, _, T, s).
 action(train(ID), move_right, T) :- train(ID, _, T-1, s), train(ID, _, T, w).
 action(train(ID), move_right, T) :- train(ID, _, T-1, w), train(ID, _, T, n).
 action(train(ID), move_right, T) :- train(ID, _, T-1, n), train(ID, _, T, e).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% minimize waiting on track (train existing)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% minimize the amount of time any train exists (between start and end)
+#minimize { 1, ID, T : train_exists(ID, T) }.
