@@ -6,7 +6,7 @@ dir(n;s;e;w).
 % --- [ START ] --------------------------------------------------------------------------------------------------------
 
 % Train Start
-position(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
+position(ID, POS, T, DIR) :- start(ID, POS, T, DIR).
 
 % --- [ CELLS ] --------------------------------------------------------------------------------------------------------
 
@@ -16,44 +16,44 @@ position(ID, (X, Y), T, DIR) :- start(ID, (X, Y), T, DIR).
 %                  N  S  N  S
 
 % type 1
-cell((X, Y), 1, 0, 0, 0, 0, 0) :- cell((X, Y), 32800).
-cell((X, Y), 0, 1, 0, 0, 0, 0) :- cell((X, Y), 1025).
+cell(POS, 1, 0, 0, 0, 0, 0) :- cell(POS, 32800).
+cell(POS, 0, 1, 0, 0, 0, 0) :- cell(POS, 1025).
 
-cell((X, Y), 0, 0, 0, 0, 0, 1) :- cell((X, Y), 4608).
-cell((X, Y), 0, 0, 0, 1, 0, 0) :- cell((X, Y), 16386).
-cell((X, Y), 0, 0, 1, 0, 0, 0) :- cell((X, Y), 72).
-cell((X, Y), 0, 0, 0, 0, 1, 0) :- cell((X, Y), 2064).
+cell(POS, 0, 0, 0, 0, 0, 1) :- cell(POS, 4608).
+cell(POS, 0, 0, 0, 1, 0, 0) :- cell(POS, 16386).
+cell(POS, 0, 0, 1, 0, 0, 0) :- cell(POS, 72).
+cell(POS, 0, 0, 0, 0, 1, 0) :- cell(POS, 2064).
 
 % type 2
-cell((X, Y), 1, 0, 0, 0, 0, 1) :- cell((X, Y), 37408).
-cell((X, Y), 0, 1, 0, 1, 0, 0) :- cell((X, Y), 17411).
-cell((X, Y), 1, 0, 1, 0, 0, 0) :- cell((X, Y), 32872).
-cell((X, Y), 0, 1, 0, 0, 1, 0) :- cell((X, Y), 3089).
+cell(POS, 1, 0, 0, 0, 0, 1) :- cell(POS, 37408).
+cell(POS, 0, 1, 0, 1, 0, 0) :- cell(POS, 17411).
+cell(POS, 1, 0, 1, 0, 0, 0) :- cell(POS, 32872).
+cell(POS, 0, 1, 0, 0, 1, 0) :- cell(POS, 3089).
 
-cell((X, Y), 1, 0, 0, 1, 0, 0) :- cell((X, Y), 49186).
-cell((X, Y), 0, 1, 1, 0, 0, 0) :- cell((X, Y), 1097).
-cell((X, Y), 1, 0, 0, 0, 1, 0) :- cell((X, Y), 34864).
-cell((X, Y), 0, 1, 0, 0, 0, 1) :- cell((X, Y), 5633).
+cell(POS, 1, 0, 0, 1, 0, 0) :- cell(POS, 49186).
+cell(POS, 0, 1, 1, 0, 0, 0) :- cell(POS, 1097).
+cell(POS, 1, 0, 0, 0, 1, 0) :- cell(POS, 34864).
+cell(POS, 0, 1, 0, 0, 0, 1) :- cell(POS, 5633).
 
 % type 3
-cell((X, Y), 1, 1, 0, 0, 0, 0) :- cell((X, Y), 33825).
+cell(POS, 1, 1, 0, 0, 0, 0) :- cell(POS, 33825).
 
 % type 4
-cell((X, Y), 1, 1, 0, 0, 0, 1) :- cell((X, Y), 38433).
-cell((X, Y), 1, 1, 0, 1, 0, 0) :- cell((X, Y), 50211).
-cell((X, Y), 1, 1, 1, 0, 0, 0) :- cell((X, Y), 33897).
-cell((X, Y), 1, 1, 0, 0, 1, 0) :- cell((X, Y), 35889).
+cell(POS, 1, 1, 0, 0, 0, 1) :- cell(POS, 38433).
+cell(POS, 1, 1, 0, 1, 0, 0) :- cell(POS, 50211).
+cell(POS, 1, 1, 1, 0, 0, 0) :- cell(POS, 33897).
+cell(POS, 1, 1, 0, 0, 1, 0) :- cell(POS, 35889).
 
 % type 5
-cell((X, Y), 1, 1, 1, 0, 0, 1) :- cell((X, Y), 38505).
-cell((X, Y), 1, 1, 0, 1, 1, 0) :- cell((X, Y), 52275).
+cell(POS, 1, 1, 1, 0, 0, 1) :- cell(POS, 38505).
+cell(POS, 1, 1, 0, 1, 1, 0) :- cell(POS, 52275).
 
 % type 6
-cell((X, Y), 0, 0, 0, 1, 0, 1) :- cell((X, Y), 20994).
-cell((X, Y), 0, 0, 1, 1, 0, 0) :- cell((X, Y), 16458).
-cell((X, Y), 0, 0, 1, 0, 1, 0) :- cell((X, Y), 2136).
-cell((X, Y), 0, 0, 0, 0, 1, 1) :- cell((X, Y), 6672).
-
+cell(POS, 0, 0, 0, 1, 0, 1) :- cell(POS, 20994).
+cell(POS, 0, 0, 1, 1, 0, 0) :- cell(POS, 16458).
+cell(POS, 0, 0, 1, 0, 1, 0) :- cell(POS, 2136).
+cell(POS, 0, 0, 0, 0, 1, 1) :- cell(POS, 6672).
+Track Type #0
 % --- [ EDGES ] --------------------------------------------------------------------------------------------------------
 
 % wait is possible everywhere
