@@ -3,6 +3,31 @@
 % a ┬─┴ A
 % 0 b 0 0
 
+% SOLUTION
+% position(train_A,(0,2),0,e)
+% action(train_A,wait,0)
+% position(train_A,(0,2),1,e)
+% action(train_A,move_forward,1)
+% position(train_A,(1,2),2,e)
+% action(train_A,move_forward,2)
+% position(train_A,(2,2),3,e)
+% action(train_A,move_forward,3)
+% position(train_A,(3,2),4,e)
+% arrived(train_A,4)
+%
+%
+% position(train_B,(1,3),0,n)
+% action(train_B,move_forward,0)
+% position(train_B,(1,2),1,n)
+% action(train_B,move_right,1)
+% position(train_B,(2,2),2,e)
+% action(train_B,move_left,2)
+% position(train_B,(2,1),3,n)
+% action(train_B,move_right,3)
+% position(train_B,(3,1),4,e)
+% arrived(train_B,4)
+
+
 #const steps=4.
 
 cell((0, 0), 0).
