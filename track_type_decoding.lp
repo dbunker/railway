@@ -1,15 +1,8 @@
-% --- [ ENVIRONMENT ] --------------------------------------------------------------------------------------------------
-
-dir(0..3).  % n=0 e=1 s=2 w=3
-
-diff(0,( 0,-1)).
-diff(1,( 1, 0)).
-diff(2,( 0, 1)).
-diff(3,(-1, 0)).
+#include "common.lp".
 
 % --- [ TRACK TYPES] ---------------------------------------------------------------------------------------------------
 
-track_type(TYPE) :- cell(_, TYPE).
+track_type(TYPE) :- cell_custom(_, TYPE).
 
 % --- [ BINARY TRACK REPRESENTATION ] ----------------------------------------------------------------------------------
 
@@ -60,11 +53,13 @@ action_direction_change(move_right,   1).
 
 % --- [ EDGES ] --------------------------------------------------------------------------------------------------------
 
-edge((X,Y),DIR,(X+DX,Y+DY),DIR_AFTER) :- cell((X,Y),T), cell((X+DX,Y+DY),_),
-                                         action_possible(T,DIR,A), A!=wait,
-                                         action_direction_change(A,DIR_CHANGE), dir(DIR),
-                                         DIR_AFTER=(DIR+DIR_CHANGE)\4, diff(DIR_AFTER,(DX,DY)).
+edge((X,Y),DIR,(X+DX,Y+DY),DIR_AFTER,A) :- cell_custom((X,Y),T), cell_custom((X+DX,Y+DY),_),
+                                           action_possible(T,DIR,A), A!=wait,
+                                           action_direction_change(A,DIR_CHANGE), dir(DIR),
+                                           DIR_AFTER=(DIR+DIR_CHANGE)\4, diff(DIR_AFTER,(DX,DY)).
 
-#show edge/4.
-%#show transitions/7.
+edge((X,Y),DIR,(X,Y),DIR,wait) :- edge((X,Y),DIR,_,_,_).
+
+%#show edge/5.
 %#show action_possible/3.
+%#show transitions/7.
