@@ -2,6 +2,8 @@
 
 Project for the course "Railway Scheduling" for the M.Sc. Program Cognitive Systems of University of Potsdam
 
+This Project uses the [KRR-Flatland](https://github.com/krr-up/flatland) repo for ASP.
+
 + Using the Flatland environment:
   + Project: https://flatland.aicrowd.com/intro.html
   + Paper: https://arxiv.org/pdf/2012.05893
