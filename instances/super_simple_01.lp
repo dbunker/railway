@@ -2,8 +2,6 @@
 % a - A
 % 0 0 0
 
-#const steps=4.
-
 cell((0, 0), 0).
 cell((0, 1), 0).
 cell((0, 2), 0).

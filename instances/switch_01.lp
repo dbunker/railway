@@ -14,8 +14,6 @@
 % A goes first
 % B goes first
 
-#const steps=3.
-
 cell((0, 0), 0).
 cell((1, 0), 32800).
 cell((2, 0), 0).
