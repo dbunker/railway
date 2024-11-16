@@ -1,4 +1,5 @@
 #include "common.lp".
+#include "track_type_decoding.lp".
 
 % --- [ TRAINS ] -------------------------------------------------------------------------------------------------------
 
@@ -56,8 +57,8 @@ arrived(ID,T) :- end_custom(ID,POS,T_END), at(ID,POS,_,T), T<=T_END.
 
 #minimize{T: arrived(_,T)}.
 
-%#show at/4.
-#show arrived/2.
-#show action/3.
-#show spawn/2.
+#show at/4.
+%#show arrived/2.
+%#show action/3.
+%#show spawn/2.
 %#show start_custom/4.
