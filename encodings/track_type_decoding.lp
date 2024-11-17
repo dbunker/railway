@@ -1,3 +1,5 @@
+#include "common.lp".
+
 % --- [ TRACK TYPES] ---------------------------------------------------------------------------------------------------
 
 track_type(TYPE) :- cell_custom(_, TYPE).
@@ -45,19 +47,28 @@ action_possible(T,1,move_right  ) :- transitions(_,_,_,_,_,X,T), X>0.
 
 % --- [ ACTION PROPERTIES ] --------------------------------------------------------------------------------------------
 
-action_direction_change(move_left,   -1).
-action_direction_change(move_forward, 0).
-action_direction_change(move_right,   1).
+action_direction_change(0, move_left,    3).
+action_direction_change(1, move_left,    0).
+action_direction_change(2, move_left,    1).
+action_direction_change(3, move_left,    2).
+action_direction_change(0, move_forward, 0).
+action_direction_change(1, move_forward, 1).
+action_direction_change(2, move_forward, 2).
+action_direction_change(3, move_forward, 3).
+action_direction_change(0, move_right,   1).
+action_direction_change(1, move_right,   2).
+action_direction_change(2, move_right,   3).
+action_direction_change(3, move_right,   0).
 
 % --- [ EDGES ] --------------------------------------------------------------------------------------------------------
 
 edge((X,Y),DIR,(X+DX,Y+DY),DIR_AFTER,A) :- cell_custom((X,Y),T), cell_custom((X+DX,Y+DY),_),
                                            action_possible(T,DIR,A), A!=wait,
-                                           action_direction_change(A,DIR_CHANGE), dir(DIR),
-                                           DIR_AFTER=(DIR+DIR_CHANGE)\4, diff(DIR_AFTER,(DX,DY)).
+                                           action_direction_change(DIR,A,DIR_AFTER), diff(DIR_AFTER,(DX,DY)).
 
 edge((X,Y),DIR,(X,Y),DIR,wait) :- edge((X,Y),DIR,_,_,_).
 
+%#show bits/5.
 %#show edge/5.
 %#show action_possible/3.
 %#show transitions/7.
