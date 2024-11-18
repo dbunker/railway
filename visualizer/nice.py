@@ -94,7 +94,7 @@ def env_encoding(env):
 def run_encoding():
 
     out_file = open('output.json', 'w')
-    subprocess.call(['clingo', '../encodings/rail_new.lp', 'instance.lp', '0', '--outf=2'], stdout=out_file)
+    subprocess.call(['clingo', '../encodings/rail_new_actions.lp', 'instance.lp', '0', '--outf=2'], stdout=out_file)
 
 
 def get_final_positions():
@@ -168,7 +168,7 @@ def create_ui(env_image, positions_dict):
     ui.run()
 
 
-random_env = generate_rail(25, 24, 2)
+random_env = generate_rail(25, 24, 4, random_seed=0)
 env_image = render_env(random_env)
 
 env_encoding(random_env)
