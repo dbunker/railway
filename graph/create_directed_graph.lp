@@ -31,7 +31,7 @@ output_edge(N1,N2,D) :- connection(N1,N2,D).
 
 
 
-#show node_end/2.
-#show node_start/2.
-#show output_node/1.
-#show output_edge/3.
+%#show node_end/2.
+%#show node_start/2.
+%#show output_node/1.
+%#show output_edge/3.

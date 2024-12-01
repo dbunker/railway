@@ -1,5 +1,7 @@
 % double slip switch in middle
 
+train(0). start(0,(2,1),0,s). end(0,(0,1),10).
+
 cell((0, 0), 16386).
 cell((1, 0), 16458).
 cell((2, 0), 72).
