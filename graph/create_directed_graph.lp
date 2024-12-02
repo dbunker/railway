@@ -15,6 +15,11 @@ connection(SWITCH_1,SWITCH_2,0) :- initial_edge(SWITCH_1,SWITCH_2), switch(SWITC
 reachable(SWITCH_1,N2,D+1) :- reachable(SWITCH_1,N1,D), initial_edge(N1,N2), not switch(N2).
 connection(SWITCH_1,SWITCH_2,D+1) :- reachable(SWITCH_1,N,D), initial_edge(N,SWITCH_2), switch(SWITCH_2).
 
+% --- [ REACHABLE REVERSE ] --------------------------------------------------------------------------------------------
+
+reachable_reverse(N,SWITCH_1) :- initial_edge(N,SWITCH_1), switch(SWITCH_1), not switch(N).
+reachable_reverse(N2,SWITCH_1) :- reachable_reverse(N1,SWITCH_1), initial_edge(N2,N1), not switch(N2).
+
 % --- [ START AND END POSITIONS ] --------------------------------------------------------------------------------------
 
 node_start(((X,Y),DIR),ID) :- start_custom(ID,(X,Y),_,DIR).

@@ -9,11 +9,6 @@ possible_action(wait;continue).
 % Start at time 0 at start position
 at(ID,N,0) :- graph_at(ID,N,S), spawn_time(ID,S).
 
-% --- [ REVERSE REACHABLE ] ------------------------------------------------------------------------------------------------------
-
-reachable_reverse(N,SWITCH_2) :- initial_edge(N,SWITCH_2), connection(SWITCH_1,SWITCH_2,_), reachable(SWITCH_1,N,_).
-reachable_reverse(N1,SWITCH) :- reachable_reverse(N2,SWITCH), initial_edge(N1,N2), not switch(N1).
-
 % --- [ Wait action ] --------------------------------------------------------------------------------------------------
 
 at(ID,N,T+1) :- at(ID,N,T), action(ID,wait,T).
@@ -28,7 +23,7 @@ at(ID,N2,T+1) :- at(ID,N1,T), action(ID,continue,T), initial_edge(N1,N2), graph_
 
 % --- [ STEP COMPLETED ] -----------------------------------------------------------------------------------------------
 
-% completed(ID,S) :- at(ID,N,_), graph_at(ID,N,S).
+completed(ID,S) :- at(ID,N,_), graph_at(ID,N,S).
 
 % --- [ GOAL CONDITION ] -----------------------------------------------------------------------------------------------
 
@@ -36,6 +31,11 @@ at(ID,N2,T+1) :- at(ID,N1,T), action(ID,continue,T), initial_edge(N1,N2), graph_
 
 % :- not at(ID,((X,Y),_),_), end_custom(ID,(X,Y),_).
 
-#show reachable_reverse/2.
-%#show at/3.
+sum_completed(SUM) :- SUM=#sum{1,ID: completed(ID,S)}.
+
+#maximize{SUM: sum_completed(SUM)}.
+
+%#show reachable_reverse/2.
+#show at/3.
+#show completed/2.
 %#show action/3.
