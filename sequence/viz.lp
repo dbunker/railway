@@ -5,8 +5,10 @@ node(POS) :- edge(_, POS).
 edge((POS_A, POS_B)) :- edge(POS_A, POS_B).
 
 edge((POS_A, POS_B, 1)) :- edge(POS_A, POS_B), move(a, POS_A, POS_B).
-
 attr(edge, (POS_A, POS_B, 1), color, "green") :- edge(POS_A, POS_B), move(a, POS_A, POS_B).
+
+edge((POS_A, POS_B, 1)) :- edge(POS_A, POS_B), move(b, POS_A, POS_B).
+attr(edge, (POS_A, POS_B, 1), color, "orange") :- edge(POS_A, POS_B), move(b, POS_A, POS_B).
 
 attr(graph_nodes, default, style, filled).
 

@@ -13,19 +13,17 @@
 start(a, (0,2), 0).
 end(a, (1,3), 4).
 
-% start(b, (1,0), 1).
-% end(b, (0,2), 5).
+start(b, (1,0), 1).
+end(b, (0,0), 5).
 
-edge((0,0), (0,1)).
-edge((0,1), (0,2)).
+edge((0,0), (0,1), 1).
+edge((0,1), (0,2), 1).
 
-edge((0,2), (1,2)).
+edge((0,1), (1,1), 1).
 
-edge((0,1), (1,1)).
-
-edge((1,0), (1,1)).
-edge((1,1), (1,2)).
-edge((1,2), (1,3)).
+edge((1,0), (1,1), 1).
+edge((1,1), (1,2), 1).
+edge((1,2), (1,3), 1).
 
 #show start/3.
 #show end/3.
@@ -38,7 +36,8 @@ edge((1,2), (1,3)).
 % #show backwards/3.
 
 % reverse edges
-edge(A, B) :- edge(B, A).
+edge(A, B, W) :- edge(B, A, W).
+edge(A, B) :- edge(B, A, W).
 
 % nodes
 node(POS) :- edge(POS, _). 
@@ -66,8 +65,30 @@ backwards(ID, POS, PREV) :- backwards(ID, _, POS), move(ID, PREV, POS).
 
 % prevent move cycles
 path(ID, PREV, POS) :- move(ID, PREV, POS).
-path(ID, FAR_PREV, POS) :- path(ID, FAR_PREV, PREV), path(ID, PREV, POS).
+path(ID, FARTHER_PREV, POS) :- path(ID, FARTHER_PREV, PREV), path(ID, PREV, POS).
 :- path(ID, PREV, POS), path(ID, POS, PREV).
 
 % prevent more than 1 path out
 :- move(ID, PREV, POS_A), move(ID, PREV, POS_B), POS_A != POS_B.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% prevent collision
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+resolve(A,B,U) :- start(A, U, _), move(B,_,U), A!=B.
+
+resolve(A,B,U) :- end(B, U, _), move(A,_,U), A!=B.
+
+{ resolve(A,B,U); resolve(B,A,U) } >= 1 :- move(A,_,U), move(B,_,U), A<B.
+
+:- resolve(A,B,U), resolve(B,A,U).
+
+:- move(A,U,V), move(B,V,U), A<B, not resolve(A,B,V), not resolve(B,A,U).
+
+% #edge ((A,U),(A,V)) : move(A,U,V).
+% #edge ((A,V),(B,U)) : resolve(A,B,U), move(A,U,V).
+
+&diff{(A,U)+D}<=(A,V) :- move(A,U,V), edge(U,V,D).
+&diff{(A,V)+W}<=(B,U) :- resolve(A,B,U), move(A,U,V), edge(U,V,W).
+
+#show resolve/3.
