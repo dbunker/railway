@@ -53,7 +53,7 @@ at(ID, POS) :- move(ID, _, POS).
 :- end(ID, POS, _), not at(ID, POS).
 
 % prevent reverse back 
-:- move(ID, PREV, POS), move(ID, POS, PREV).
+% :- move(ID, PREV, POS), move(ID, POS, PREV).
 
 % backwards
 backwards(ID, POS, PREV) :- end(ID, POS, _), move(ID, PREV, POS).
@@ -64,15 +64,15 @@ backwards(ID, POS, PREV) :- backwards(ID, _, POS), move(ID, PREV, POS).
 :- move(ID, PREV, POS), not backwards(ID, POS, PREV).
 
 % prevent move cycles
-path(ID, PREV, POS) :- move(ID, PREV, POS).
-path(ID, FARTHER_PREV, POS) :- path(ID, FARTHER_PREV, PREV), path(ID, PREV, POS).
-:- path(ID, PREV, POS), path(ID, POS, PREV).
+% path(ID, PREV, POS) :- move(ID, PREV, POS).
+% path(ID, FARTHER_PREV, POS) :- path(ID, FARTHER_PREV, PREV), path(ID, PREV, POS).
+% :- path(ID, PREV, POS), path(ID, POS, PREV).
 
 % prevent more than 1 path out
-:- move(ID, PREV, POS_A), move(ID, PREV, POS_B), POS_A != POS_B.
+% :- move(ID, PREV, POS_A), move(ID, PREV, POS_B), POS_A != POS_B.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% prevent collision
+% prevent deadlock
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 resolve(A,B,U) :- start(A, U, _), move(B,_,U), A!=B.
@@ -83,12 +83,34 @@ resolve(A,B,U) :- end(B, U, _), move(A,_,U), A!=B.
 
 :- resolve(A,B,U), resolve(B,A,U).
 
-:- move(A,U,V), move(B,V,U), A<B, not resolve(A,B,V), not resolve(B,A,U).
+% :- move(A,U,V), move(B,V,U), A<B, not resolve(A,B,V), not resolve(B,A,U).
 
-% #edge ((A,U),(A,V)) : move(A,U,V).
-% #edge ((A,V),(B,U)) : resolve(A,B,U), move(A,U,V).
+% remove cycles
+#edge ((A,U),(A,V)) : move(A,U,V).
+#edge ((A,V),(B,U)) : resolve(A,B,U), move(A,U,V).
 
-&diff{(A,U)+D}<=(A,V) :- move(A,U,V), edge(U,V,D).
-&diff{(A,V)+W}<=(B,U) :- resolve(A,B,U), move(A,U,V), edge(U,V,W).
+% &diff{(A,U)+D}<=(A,V) :- move(A,U,V), edge(U,V,D).
+% &diff{(A,V)+W}<=(B,U) :- resolve(A,B,U), move(A,U,V), edge(U,V,W).
 
 #show resolve/3.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% prevent collision
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+at(ID, POS, T) :- start(ID, POS, T).
+
+{ move(ID, PREV, POS, T); still(ID, T) } = 1 :- move(ID, PREV, POS), at(ID, PREV, T), end(ID, _, END_T), T < END_T.
+at(ID, POS, T+W) :- move(ID, PREV, POS, T), edge(PREV, POS, W).
+at(ID, POS, T+1) :- at(ID, POS, T), still(ID, T).
+
+:- end(ID, POS, T), not at(ID, POS, T).
+
+% prevent trains being at same vertex
+:- at(ID_A, POS, T), at(ID_B, POS, T), ID_A != ID_B.
+
+% prevent movement in opposite directions while in use
+:- move(ID_A, PREV, POS, T_A), move(ID_B, POS, PREV, T_B), edge(PREV, POS, W), T_A > T_B, T_A < T_B + W.
+
+#show at/3.
+#show move/4.
