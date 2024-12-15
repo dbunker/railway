@@ -1,0 +1,2 @@
+
+clingo sequence.lp 0 --outf=2 | clingraph --viz-encoding=viz.lp --out=render --format=png --dir img --name-format=sequence-{model_number} --type=digraph

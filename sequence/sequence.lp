@@ -68,3 +68,6 @@ backwards(ID, POS, PREV) :- backwards(ID, _, POS), move(ID, PREV, POS).
 path(ID, PREV, POS) :- move(ID, PREV, POS).
 path(ID, FAR_PREV, POS) :- path(ID, FAR_PREV, PREV), path(ID, PREV, POS).
 :- path(ID, PREV, POS), path(ID, POS, PREV).
+
+% prevent more than 1 path out
+:- move(ID, PREV, POS_A), move(ID, PREV, POS_B), POS_A != POS_B.
