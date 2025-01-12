@@ -27,14 +27,14 @@ spawn(ID,U) :- node_start(U,ID).
 % --- ORDER RESOLVE ----------------------------------------------------------------------------------------------------
 
 % Resolve moving into Start & End
-resolve(ID1,ID2,U) :- spawn(ID1,U), move(ID2,_,U), ID1!=ID2.
-resolve(ID1,ID2,((X,Y),DIR)) :-  goal(ID1,(X,Y)), move(ID2,_,((X,Y),DIR)), ID1!=ID2.
+resolve(ID1,ID2,(X,Y)) :- spawn(ID1,((X,Y),_)), move(ID2,_,((X,Y),_)), ID1!=ID2.
+resolve(ID1,ID2,(X,Y)) :- goal(ID1,(X,Y)), move(ID2,_,((X,Y),_)), ID1!=ID2.
 
 % Resolve to trains moving into the same node
-{resolve(ID1,ID2,U); resolve(ID2,ID1,U)} >= 1 :- move(ID1,_,U), move(ID2,_,U), ID1<ID2.
+{resolve(ID1,ID2,(X,Y)); resolve(ID2,ID1,(X,Y))} >= 1 :- move(ID1,_,((X,Y),_)), move(ID2,_,((X,Y),_)), ID1<ID2.
 
 % Prohibit opposite resolutions for same node
-:- resolve(ID1,ID2,U), resolve(ID2,ID1,U).
+:- resolve(ID1,ID2,(X,Y)), resolve(ID2,ID1,(X,Y)).
 
 #show resolve/3.
 #show move/3.
