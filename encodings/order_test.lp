@@ -36,5 +36,10 @@ resolve(ID1,ID2,(X,Y)) :- goal(ID1,(X,Y)), move(ID2,_,((X,Y),_)), ID1!=ID2.
 % Prohibit opposite resolutions for same node
 :- resolve(ID1,ID2,(X,Y)), resolve(ID2,ID1,(X,Y)).
 
+% ----------------------------------------------------------------------------------------------------------------------
+
+#edge ((ID,U),(ID,V)) : move(ID,U,V).
+#edge ((ID1,V),(ID2,U)) : resolve(ID1,ID2,U), move(IDA,U,V).
+
 #show resolve/3.
 #show move/3.
