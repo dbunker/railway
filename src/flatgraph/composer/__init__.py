@@ -6,6 +6,7 @@ from .base import *
 from .partial_order import *
 
 ENCODING = "encodings/order_test.lp"
+ENCODING_CONNECTIONS = "encodings/connection.lp"
 
 
 def compute_instance(instance_path: str):
@@ -13,6 +14,7 @@ def compute_instance(instance_path: str):
 
     ctl = clingo.Control()
     ctl.load(ENCODING)
+    ctl.load(ENCODING_CONNECTIONS)
     ctl.load(instance_path)
     ctl.ground([("base", [])])
 

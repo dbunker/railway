@@ -1,9 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Set, Dict, Optional
 
 import clingo
-from seaborn._core.moves import Move
 
 from .base import Composer
 
@@ -33,6 +32,8 @@ class Node:
 
     def __str__(self) -> str:
         return f"({str(self.x).rjust(3)},{str(self.y).rjust(3)})"
+
+    __repr__ = __str__
 
 
 @dataclass
@@ -76,6 +77,8 @@ class Move:
 @dataclass
 class Transition:
     node: Node
+    direction_in: int
+    direction_out: int
     action: Action
 
     def __hash__(self):
@@ -95,8 +98,11 @@ class PartialOrder:
 class TrainSimulator:
     train: Train
     position: Node
+    direction: int
     last_update: int = 0
     current_move: Optional[Move] = None
+    goal_reached: bool = False
+    passed_nodes: Set[Node] = field(default_factory=set)
 
 
 class ComposerPartialOrder(Composer):
@@ -110,7 +116,7 @@ class ComposerPartialOrder(Composer):
         self.nodes: Set[Node] = set()
         self.order: Dict[Node, Set[PartialOrder]] = {}
 
-        self.starts: Dict[Train, Node] = {}
+        self.starts: Dict[Train, DirectedNode] = {}
         self.goals: Dict[Train, Node] = {}
         self.edges_real: Dict[Node, Set[Transition]] = {}
         self.move_connections: Dict[Move, Set[MoveUndirected]] = {}
@@ -154,7 +160,7 @@ class ComposerPartialOrder(Composer):
         for start in [a for a in self.order_plan if a.startswith("node_start")]:
             symbol = clingo.parse_term(start)
 
-            node = parse_node(symbol.arguments[0].arguments[0])
+            node = parse_directed_node(symbol.arguments[0])
             train = parse_train(symbol.arguments[1])
 
             self.starts[train] = node
@@ -171,16 +177,18 @@ class ComposerPartialOrder(Composer):
             symbol = clingo.parse_term(edge)
 
             node_from = parse_node(symbol.arguments[0])
+            node_from_dir = int(str(symbol.arguments[1]))
             node_to = parse_node(symbol.arguments[2])
+            node_to_dir = int(str(symbol.arguments[3]))
             action = parse_action(symbol.arguments[4])
 
             self.nodes.add(node_from)
             self.nodes.add(node_to)
 
             if node_from in self.edges_real:
-                self.edges_real[node_from].add(Transition(node_to, action))
+                self.edges_real[node_from].add(Transition(node_to, node_from_dir, node_to_dir, action))
             else:
-                self.edges_real[node_from] = {Transition(node_to, action)}
+                self.edges_real[node_from] = {Transition(node_to, node_from_dir, node_to_dir, action)}
 
         for connection in [
             a
@@ -203,26 +211,47 @@ class ComposerPartialOrder(Composer):
         print(self.status())
 
     def simulate(self) -> None:
-        train_sims = [
-            TrainSimulator(train, self.starts[train]) for train in self.trains
-        ]
+        train_sims = {
+            train: TrainSimulator(train, self.starts[train].node, self.starts[train].direction) for train in self.trains
+        }
+        action_log = set()
         time = 0
-
-        for train in train_sims:
-            print(train)
 
         while True:
             time += 1
-            for train in train_sims:
+            for _, train in train_sims.items():
+                # skip arrived trains
+                if train.goal_reached:
+                    continue
+
                 # select new move
                 if train.current_move is None:
                     move = self.get_move_at_node(train.train, train.position)
                     train.current_move = move
-                # move train
+                # check if next node can be entered
+                next_transition = self.get_next_transition(train)
+                can_enter = self.can_enter_node(train.train, next_transition.node, train_sims)
+                if can_enter:
+                    # move train
+                    last_node = train.position
+                    train.passed_nodes.add(last_node)
+                    train.position = next_transition.node
+                    train.direction = next_transition.direction_out
+                    train.last_update = time
+                    action_log.add((train.train.train_id, time, next_transition.action, last_node, next_transition.node))
+                else:
+                    # wait
+                    action_log.add((train.train.train_id, time, Action.WAIT, train.position))
+                # update current move
+                if train.position == train.current_move.node_to.node:
+                    train.current_move = None
+                    # goal condition
+                    if train.position == self.goals[train.train]:
+                        train.goal_reached = True
 
-                print(train)
-
-            if time == 1:
+            if all([train.goal_reached for train in train_sims.values()]):
+                for action in sorted(action_log, key=lambda a: (a[0], a[1])):
+                    print(action)
                 break
 
     def compose(self) -> Set[str]:
@@ -233,6 +262,29 @@ class ComposerPartialOrder(Composer):
         for move in self.moves[train]:
             if move.node_from.node == node:
                 return move
+
+    def get_next_transition(self, train: TrainSimulator) -> Transition:
+        moves = self.move_connections[train.current_move]
+        for move in moves:
+            if move.node_from == train.position:
+                transition = self.get_move_transition(move, train.direction)
+                return transition
+
+    def get_move_transition(self, move: MoveUndirected, direction: int) -> Transition:
+        transitions = self.edges_real[move.node_from]
+        for transition in transitions:
+            if transition.node == move.node_to and transition.direction_in == direction:
+                return transition
+
+    def can_enter_node(self, train: Train, node: Node, trains: Dict[Train, TrainSimulator]) -> bool:
+        if node not in self.order:
+            return True
+        results = []
+        for order in self.order[node]:
+            if train == order.after:
+                can_enter = node in trains[order.before].passed_nodes
+                results.append(can_enter)
+        return all(results)
 
     def status(self) -> str:
         out = "\n"
