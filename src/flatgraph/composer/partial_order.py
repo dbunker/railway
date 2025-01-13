@@ -52,6 +52,13 @@ class Train:
 
 
 @dataclass
+class TrainSimulator:
+    train: Train
+    position: Node
+    last_update: int = 0
+
+
+@dataclass
 class Move:
     node_from: DirectedNode
     node_to: DirectedNode
@@ -173,7 +180,8 @@ class ComposerPartialOrder(Composer):
         print(self.status())
 
     def simulate(self) -> None:
-        for train in self.trains:
+        train_sims = [TrainSimulator(train) for train in self.trains]
+        for train in train_sims:
             print(train)
 
     def compose(self) -> Set[str]:
