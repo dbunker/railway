@@ -21,6 +21,7 @@ def compute_instance(instance_path: str):
         if model is None:
             warnings.warn("No model to solve")
             return
-        model_atoms = {str(a) for a in model.symbols(shown=True)}
+        model_atoms = {str(a) for a in model.symbols(atoms=True)}
+        print(model_atoms)
 
         composer = ComposerPartialOrder(model_atoms)

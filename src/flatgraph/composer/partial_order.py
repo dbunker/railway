@@ -1,9 +1,25 @@
 from dataclasses import dataclass
-from typing import Set, Dict
+from enum import Enum
+from typing import Set, Dict, Optional
 
 import clingo
 
 from .base import Composer
+
+
+# https://stackoverflow.com/questions/29503339/how-to-get-all-values-from-python-enum-class
+class ExtendedEnum(Enum):
+
+    @classmethod
+    def list(cls):
+        return list(map(lambda c: c.value, cls))
+
+
+class Action(ExtendedEnum):
+    MOVE_FORWARD = "move_forward"
+    MOVE_LEFT = "move_left"
+    MOVE_RIGHT = "move_right"
+    WAIT = "wait"
 
 
 @dataclass
@@ -13,6 +29,9 @@ class Node:
 
     def __hash__(self):
         return hash((self.x, self.y))
+
+    def __str__(self) -> str:
+        return f"({str(self.x).rjust(3)},{str(self.y).rjust(3)})"
 
 
 @dataclass
@@ -42,6 +61,15 @@ class Move:
 
 
 @dataclass
+class Transition:
+    node: Node
+    action: Action
+
+    def __hash__(self):
+        return hash((self.node, self.action))
+
+
+@dataclass
 class PartialOrder:
     before: Train
     after: Train
@@ -60,6 +88,8 @@ class ComposerPartialOrder(Composer):
         self.trains: Set[Train] = set()
         self.nodes: Set[Node] = set()
         self.order: Dict[Node, Set[PartialOrder]] = {}
+
+        self.edges_real: Dict[Node, Set[Transition]] = {}
 
         self.preprocess()
 
@@ -86,7 +116,6 @@ class ComposerPartialOrder(Composer):
                 self.moves[train] = {Move(node_from, node_to)}
 
         for resolve in [a for a in self.order_plan if a.startswith("resolve")]:
-            print("R", resolve)
             symbol = clingo.parse_term(resolve)
 
             before = parse_train(symbol.arguments[0])
@@ -97,6 +126,21 @@ class ComposerPartialOrder(Composer):
                 self.order[node].add(PartialOrder(before, after))
             else:
                 self.order[node] = {PartialOrder(before, after)}
+
+        for edge in [a for a in self.order_plan if a.startswith("edge")]:
+            symbol = clingo.parse_term(edge)
+
+            node_from = parse_node(symbol.arguments[0])
+            node_to = parse_node(symbol.arguments[2])
+            action = parse_action(symbol.arguments[4])
+
+            self.nodes.add(node_from)
+            self.nodes.add(node_to)
+
+            if node_from in self.edges_real:
+                self.edges_real[node_from].add(Transition(node_to, action))
+            else:
+                self.edges_real[node_from] = {Transition(node_to, action)}
 
         print(self.status())
 
@@ -121,6 +165,30 @@ class ComposerPartialOrder(Composer):
             out += f"\t{node}:\n"
             for order in orders:
                 out += f"\t\t{order}\n"
+        out += "Edges (Real): \n"
+        out += self.adjacency_real()
+        return out
+
+    def adjacency_real(self) -> str:
+        sorted_nodes = sorted(self.nodes, key=lambda n: (n.x, n.y))
+        out = "-" * 9 + " " + " ".join([str(n) for n in sorted_nodes]) + "\n"
+        for node in sorted_nodes:
+            out += f"{node} "
+            adjacency = []
+            for target in sorted_nodes:
+                adjacency.append(
+                    target
+                    in [
+                        transition.node
+                        for transition in self.edges_real[node]
+                        if transition.action != Action.WAIT
+                    ]
+                )
+
+            out += (
+                " ".join(["[XXXXXXX]" if adj else "[       ]" for adj in adjacency])
+                + "\n"
+            )
         return out
 
 
@@ -137,3 +205,10 @@ def parse_node(node: clingo.Symbol) -> Node:
 
 def parse_train(train: clingo.Symbol) -> Train:
     return Train(int(str(train)))
+
+
+def parse_action(action: clingo.Symbol) -> Action:
+    for action_str in Action.list():
+        if str(action) == action_str:
+            return Action(action_str)
+    raise ValueError(f"{action} is not a valid action")
