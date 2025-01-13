@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict
+from typing import Set, Dict, Optional
 
 import clingo
+from seaborn._core.moves import Move
 
 from .base import Composer
 
@@ -52,10 +53,12 @@ class Train:
 
 
 @dataclass
-class TrainSimulator:
-    train: Train
-    position: Node
-    last_update: int = 0
+class MoveUndirected:
+    node_from: Node
+    node_to: Node
+
+    def __hash__(self):
+        return hash((self.node_from, self.node_to))
 
 
 @dataclass
@@ -63,14 +66,8 @@ class Move:
     node_from: DirectedNode
     node_to: DirectedNode
 
-    def __hash__(self):
-        return hash((self.node_from, self.node_to))
-
-
-@dataclass
-class MoveUndirected:
-    node_from: Node
-    node_to: Node
+    def to_undirected(self) -> MoveUndirected:
+        return MoveUndirected(self.node_from.node, self.node_to.node)
 
     def __hash__(self):
         return hash((self.node_from, self.node_to))
@@ -94,6 +91,14 @@ class PartialOrder:
         return hash((self.before, self.after))
 
 
+@dataclass
+class TrainSimulator:
+    train: Train
+    position: Node
+    last_update: int = 0
+    current_move: Optional[Move] = None
+
+
 class ComposerPartialOrder(Composer):
 
     def __init__(self, order_plan: Set[str]):
@@ -105,6 +110,8 @@ class ComposerPartialOrder(Composer):
         self.nodes: Set[Node] = set()
         self.order: Dict[Node, Set[PartialOrder]] = {}
 
+        self.starts: Dict[Train, Node] = {}
+        self.goals: Dict[Train, Node] = {}
         self.edges_real: Dict[Node, Set[Transition]] = {}
         self.move_connections: Dict[Move, Set[MoveUndirected]] = {}
 
@@ -144,6 +151,22 @@ class ComposerPartialOrder(Composer):
             else:
                 self.order[node] = {PartialOrder(before, after)}
 
+        for start in [a for a in self.order_plan if a.startswith("node_start")]:
+            symbol = clingo.parse_term(start)
+
+            node = parse_node(symbol.arguments[0].arguments[0])
+            train = parse_train(symbol.arguments[1])
+
+            self.starts[train] = node
+
+        for goal in [a for a in self.order_plan if a.startswith("node_end")]:
+            symbol = clingo.parse_term(goal)
+
+            node = parse_node(symbol.arguments[0].arguments[0])
+            train = parse_train(symbol.arguments[1])
+
+            self.goals[train] = node
+
         for edge in [a for a in self.order_plan if a.startswith("edge")]:
             symbol = clingo.parse_term(edge)
 
@@ -180,13 +203,36 @@ class ComposerPartialOrder(Composer):
         print(self.status())
 
     def simulate(self) -> None:
-        train_sims = [TrainSimulator(train) for train in self.trains]
+        train_sims = [
+            TrainSimulator(train, self.starts[train]) for train in self.trains
+        ]
+        time = 0
+
         for train in train_sims:
             print(train)
+
+        while True:
+            time += 1
+            for train in train_sims:
+                # select new move
+                if train.current_move is None:
+                    move = self.get_move_at_node(train.train, train.position)
+                    train.current_move = move
+                # move train
+
+                print(train)
+
+            if time == 1:
+                break
 
     def compose(self) -> Set[str]:
         self.simulate()
         return set()
+
+    def get_move_at_node(self, train: Train, node: Node) -> Move:
+        for move in self.moves[train]:
+            if move.node_from.node == node:
+                return move
 
     def status(self) -> str:
         out = "\n"
