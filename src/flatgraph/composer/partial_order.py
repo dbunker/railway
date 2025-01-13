@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Set, Dict, Optional
+from typing import Set, Dict
 
 import clingo
 
@@ -61,6 +61,15 @@ class Move:
 
 
 @dataclass
+class MoveUndirected:
+    node_from: Node
+    node_to: Node
+
+    def __hash__(self):
+        return hash((self.node_from, self.node_to))
+
+
+@dataclass
 class Transition:
     node: Node
     action: Action
@@ -90,6 +99,7 @@ class ComposerPartialOrder(Composer):
         self.order: Dict[Node, Set[PartialOrder]] = {}
 
         self.edges_real: Dict[Node, Set[Transition]] = {}
+        self.move_connections: Dict[Move, Set[MoveUndirected]] = {}
 
         self.preprocess()
 
@@ -142,10 +152,29 @@ class ComposerPartialOrder(Composer):
             else:
                 self.edges_real[node_from] = {Transition(node_to, action)}
 
+        for connection in [
+            a
+            for a in self.order_plan
+            if a.startswith("connection") and len(clingo.parse_term(a).arguments) == 5
+        ]:
+            symbol = clingo.parse_term(connection)
+
+            move_start = parse_directed_node(symbol.arguments[0])
+            move_end = parse_directed_node(symbol.arguments[1])
+            node_from = parse_node(symbol.arguments[2])
+            node_to = parse_node(symbol.arguments[3])
+
+            move = Move(move_start, move_end)
+            if move in self.move_connections:
+                self.move_connections[move].add(MoveUndirected(node_from, node_to))
+            else:
+                self.move_connections[move] = {MoveUndirected(node_from, node_to)}
+
         print(self.status())
 
     def simulate(self) -> None:
-        pass
+        for train in self.trains:
+            print(train)
 
     def compose(self) -> Set[str]:
         self.simulate()
@@ -184,7 +213,6 @@ class ComposerPartialOrder(Composer):
                         if transition.action != Action.WAIT
                     ]
                 )
-
             out += (
                 " ".join(["[XXXXXXX]" if adj else "[       ]" for adj in adjacency])
                 + "\n"

@@ -25,3 +25,4 @@ def compute_instance(instance_path: str):
         print(model_atoms)
 
         composer = ComposerPartialOrder(model_atoms)
+        composer.compose()
