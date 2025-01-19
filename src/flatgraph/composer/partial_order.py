@@ -252,8 +252,12 @@ class ComposerPartialOrder(Composer):
 
             if all([train.goal_reached for train in train_sims.values()]):
                 for action in sorted(action_log, key=lambda a: (a[0], a[1])):
-                    print(action)
+                    print(f"{ComposerPartialOrder._format_action(action[0], action[1], action[2])}.")
                 break
+
+    @staticmethod
+    def _format_action(train_id: int, timestep: int, action: Action) -> clingo.Symbol:
+        return clingo.parse_term(f"action(train({train_id}), {timestep}, {action.value})")
 
     def compose(self) -> Set[str]:
         self.simulate()
