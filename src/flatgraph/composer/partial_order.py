@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Set, Dict, Optional
@@ -124,6 +125,7 @@ class ComposerPartialOrder(Composer):
         self.preprocess()
 
     def preprocess(self):
+        logging.info("Preprocess Instance")
         for move in [a for a in self.order_plan if a.startswith("move")]:
             symbol = clingo.parse_term(move)
 
@@ -139,7 +141,6 @@ class ComposerPartialOrder(Composer):
             self.nodes.add(node_from.node)
             self.nodes.add(node_to.node)
 
-            print(train, node_from, node_to)
             if train in self.moves:
                 self.moves[train].add(Move(node_from, node_to))
             else:
@@ -208,9 +209,9 @@ class ComposerPartialOrder(Composer):
             else:
                 self.move_connections[move] = {MoveUndirected(node_from, node_to)}
 
-        print(self.status())
-
     def simulate(self) -> None:
+        logging.info("Simulate Train Movements")
+
         train_sims = {
             train: TrainSimulator(train, self.starts[train].node, self.starts[train].direction) for train in self.trains
         }
@@ -256,6 +257,7 @@ class ComposerPartialOrder(Composer):
 
     def compose(self) -> Set[str]:
         self.simulate()
+        logging.info("Actions Generated")
         return set()
 
     def get_move_at_node(self, train: Train, node: Node) -> Move:
