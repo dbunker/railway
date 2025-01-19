@@ -2,10 +2,6 @@
 #include "track_type_decoding.lp".
 #include "graph/create_directed_graph.lp".
 
-% FIXED INSTANCE
-move(1,((2,2),0),((0,2),3)). move(0,((2,0),2),((2,2),2)). move(1,((2,4),0),((2,2),0)). move(0,((2,2),2),((4,2),1)). resolve(1,0,(2,2)).
-
-
 {connection(N1,N2,N,M,A)} <= 1 :- move(_,N1,N2), edge(N,_,M,_,A), A!=wait.
 
 % Require Start & End connections
