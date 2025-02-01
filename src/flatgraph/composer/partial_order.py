@@ -194,14 +194,15 @@ class ComposerPartialOrder(Composer):
         for connection in [
             a
             for a in self.order_plan
-            if a.startswith("connection") and len(clingo.parse_term(a).arguments) == 5
+            if a.startswith("back") and len(clingo.parse_term(a).arguments) == 3
         ]:
             symbol = clingo.parse_term(connection)
 
-            move_start = parse_directed_node(symbol.arguments[0])
-            move_end = parse_directed_node(symbol.arguments[1])
-            node_from = parse_node(symbol.arguments[2])
-            node_to = parse_node(symbol.arguments[3])
+            move = symbol.arguments[0]
+            move_start = parse_directed_node(move.arguments[0])
+            move_end = parse_directed_node(move.arguments[1])
+            node_from = parse_directed_node(symbol.arguments[1]).node
+            node_to = parse_directed_node(symbol.arguments[2]).node
 
             move = Move(move_start, move_end)
             if move in self.move_connections:
