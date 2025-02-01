@@ -7,7 +7,7 @@ from .base import *
 from .partial_order import *
 
 ENCODING = "encodings/order_test.lp"
-ENCODING_CONNECTIONS = "encodings/connection2.lp"
+ENCODING_CONNECTIONS = "encodings/back_connections.lp"
 
 
 def compute_instance(instance_path: str):
