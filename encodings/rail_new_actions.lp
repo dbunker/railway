@@ -59,7 +59,7 @@ arrived(ID,T) :- end_custom(ID,POS,T_END), at(ID,POS,_,T), T<=T_END.
 
 % --- [ OPTIMIZATION ] -------------------------------------------------------------------------------------------------
 
-#minimize{ ID, T : at(ID,_,_,T) }.
+% #minimize{ ID, T : at(ID,_,_,T) }.
 
 #show at/4.
 %#show arrived/2.

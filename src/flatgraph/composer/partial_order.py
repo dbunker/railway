@@ -224,7 +224,9 @@ class ComposerPartialOrder(Composer):
         while True:
             time += 1
             for _, train in train_sims.items():
+                print(self.order)
                 logging.info(f"TIME={time} TRAIN={train.train.train_id}")
+                logging.info(f"train({train.train.train_id}) @ {train.position}")
                 # skip arrived trains
                 if train.goal_reached:
                     continue
@@ -257,6 +259,9 @@ class ComposerPartialOrder(Composer):
             if all([train.goal_reached for train in train_sims.values()]):
                 for action in sorted(action_log, key=lambda a: (a[0], a[1])):
                     print(f"{ComposerPartialOrder._format_action(action[0], action[1], action[2])}.")
+                break
+
+            if time > 20:
                 break
 
     @staticmethod
