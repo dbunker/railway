@@ -1,3 +1,4 @@
+import time
 import warnings
 import logging
 
@@ -10,7 +11,8 @@ ENCODING = "encodings/order_test.lp"
 ENCODING_CONNECTIONS = "encodings/back_connections.lp"
 
 
-def compute_instance(instance_path: str):
+def compute_instance(instance_path: str, timed: bool = False) -> None:
+    start_t = time.perf_counter()
     ctl = clingo.Control(["--warn=none"])
     ctl.load(ENCODING)
     ctl.load(ENCODING_CONNECTIONS)
@@ -26,3 +28,6 @@ def compute_instance(instance_path: str):
         model_atoms = {str(a) for a in model.symbols(atoms=True)}
         composer = ComposerPartialOrder(model_atoms)
         composer.compose()
+    end_t = time.perf_counter()
+    if timed:
+        print("[Time elapsed: %.4fs]" % (end_t - start_t))

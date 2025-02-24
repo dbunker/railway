@@ -13,9 +13,10 @@ def main():
         epilog="For more questions please consult our project repository on GitHub",
     )
     parser.add_argument("instance")
+    parser.add_argument("-t", "--timed", action="store_true")
     args = parser.parse_args()
 
-    compute_instance(args.instance)
+    compute_instance(args.instance, timed=args.timed)
 
 
 if __name__ == "__main__":
