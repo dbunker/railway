@@ -210,6 +210,8 @@ class ComposerPartialOrder(Composer):
             else:
                 self.move_connections[move] = {MoveUndirected(node_from, node_to)}
 
+        logging.info(self.status())
+
     def simulate(self) -> None:
         logging.info("Simulate Train Movements")
 
@@ -222,6 +224,7 @@ class ComposerPartialOrder(Composer):
         while True:
             time += 1
             for _, train in train_sims.items():
+                logging.info(f"TIME={time} TRAIN={train.train.train_id}")
                 # skip arrived trains
                 if train.goal_reached:
                     continue
