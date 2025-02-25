@@ -38,6 +38,18 @@ resolve(ID1,ID2,(X,Y)) :- goal(ID1,(X,Y)), move(ID2,_,((X,Y),_)), ID1!=ID2.
 
 % ----------------------------------------------------------------------------------------------------------------------
 
+% PATH VERIFICATION: No conflicting orders on different nodes on same path
+
+before(T,(X1,Y1),(X2,Y2)) :- move(T,((X1,Y1),_),((X2,Y2),_)).
+before(T,(X0,Y0),(X2,Y2)) :- move(T,((X0,Y0),_),((X1,Y1),_)), before(T,(X1,Y1),(X2,Y2)).
+
+order_waited(T,(X,Y),T2) :- move(T,_,((X,Y),_)), resolve(T2,T,(X,Y)).
+order_waited(T,N,T3) :- order_waited(T,N,T2), resolve(T3,T2,N).
+
+:- order_waited(T1,N1,T2), order_waited(T2,N2,T1), before(T1,N2,N1).
+
+% ----------------------------------------------------------------------------------------------------------------------
+
 #edge ((ID,U),(ID,V)) : move(ID,U,V).
 #edge ((ID1,V),(ID2,U)) : resolve(ID1,ID2,U), move(IDA,U,V).
 

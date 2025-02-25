@@ -6,6 +6,8 @@ initial_edge((POS_IN,DIR_IN),(POS_OUT,DIR_OUT)) :- edge(POS_IN,DIR_IN,POS_OUT,DI
 % --- [ SWITCHES ] -----------------------------------------------------------------------------------------------------
 
 switch(N) :- initial_node(N), 2{initial_edge(N,_)}.  % more than two outgoing edges = switch
+% Include all directions of switches as switch even if there are not multiple paths
+switch(((X,Y),DIR2)) :- switch(((X,Y),DIR)), initial_node(((X,Y),DIR2)), DIR!=DIR2.
 
 % --- [ SWITCH CONNECTIONS ] -------------------------------------------------------------------------------------------
 

@@ -224,7 +224,6 @@ class ComposerPartialOrder(Composer):
         while True:
             time += 1
             for _, train in train_sims.items():
-                print(self.order)
                 logging.info(f"TIME={time} TRAIN={train.train.train_id}")
                 logging.info(f"train({train.train.train_id}) @ {train.position}")
                 # skip arrived trains
@@ -248,6 +247,8 @@ class ComposerPartialOrder(Composer):
                     action_log.add((train.train.train_id, time, next_transition.action, last_node, next_transition.node))
                 else:
                     # wait
+                    logging.info(f"train({train.train.train_id}) BLOCKED")
+                    logging.info(f"ORDER: {self.order[next_transition.node]} @ {next_transition.node}")
                     action_log.add((train.train.train_id, time, Action.WAIT, train.position))
                 # update current move
                 if train.position == train.current_move.node_to.node:
@@ -261,7 +262,8 @@ class ComposerPartialOrder(Composer):
                     print(f"{ComposerPartialOrder._format_action(action[0], action[1], action[2])}.")
                 break
 
-            if time > 20:
+            if time > 30:
+                print("TERMINATED")
                 break
 
     @staticmethod

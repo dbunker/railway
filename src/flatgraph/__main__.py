@@ -5,7 +5,7 @@ from .composer import ComposerPartialOrder, compute_instance
 
 
 def main():
-    logging.basicConfig(encoding='utf-8', level=logging.INFO)
+    logging.basicConfig(encoding='utf-8', level=logging.WARNING)
 
     parser = argparse.ArgumentParser(
         prog="flatgraph",
