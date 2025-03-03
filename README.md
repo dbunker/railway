@@ -21,6 +21,10 @@ pip install -r requirements.txt
 
 `...`
 
+## Benchmarks
+
++ All benchmarks and their results can be found [here](./benchmarks)
+
 ## Environment
 
 ### Track-Types
