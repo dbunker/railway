@@ -223,12 +223,15 @@ class ComposerPartialOrder(Composer):
 
         while True:
             time += 1
+            any_train_moved = False
+            logging.info("-" * 100)
             for _, train in train_sims.items():
-                logging.info(f"TIME={time} TRAIN={train.train.train_id}")
-                logging.info(f"train({train.train.train_id}) @ {train.position}")
                 # skip arrived trains
                 if train.goal_reached:
                     continue
+
+                logging.info(f"TIME={time} TRAIN={train.train.train_id}")
+                logging.info(f"train({train.train.train_id}) @ {train.position}")
 
                 # select new move
                 if train.current_move is None:
@@ -245,10 +248,10 @@ class ComposerPartialOrder(Composer):
                     train.direction = next_transition.direction_out
                     train.last_update = time
                     action_log.add((train.train.train_id, time, next_transition.action, last_node, next_transition.node))
+                    any_train_moved = True
                 else:
                     # wait
                     logging.info(f"train({train.train.train_id}) BLOCKED")
-                    logging.info(f"ORDER: {self.order[next_transition.node]} @ {next_transition.node}")
                     action_log.add((train.train.train_id, time, Action.WAIT, train.position))
                 # update current move
                 if train.position == train.current_move.node_to.node:
@@ -262,8 +265,8 @@ class ComposerPartialOrder(Composer):
                     print(f"{ComposerPartialOrder._format_action(action[0], action[1], action[2])}.")
                 break
 
-            if time > 30:
-                print("TERMINATED")
+            if not any_train_moved:
+                print("TERMINATED: No more moving trains (Deadlock)")
                 break
 
     @staticmethod
@@ -318,7 +321,7 @@ class ComposerPartialOrder(Composer):
             for order in orders:
                 out += f"\t\t{order}\n"
         out += "Edges (Real): \n"
-        out += self.adjacency_real()
+        # out += self.adjacency_real()
         return out
 
     def adjacency_real(self) -> str:
