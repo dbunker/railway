@@ -15,11 +15,12 @@ Install the prerequisite packages using `pip`
 
 ```bash
 pip install -r requirements.txt
+pip install -e .
 ```
 
 ## Usage
 
-`...`
+`flatgraph benchmarks/crossing.lp -t`
 
 ## Environment
 
