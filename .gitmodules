@@ -1,3 +1,7 @@
 [submodule "flatland"]
 	path = flatland
 	url = https://github.com/krr-up/flatland
+
+[submodule "flatdraw"]
+	path = flatdraw
+	url = https://github.com/hweichelt/flatdraw
