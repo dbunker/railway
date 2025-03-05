@@ -35,16 +35,16 @@ class VisualizerView(Visualizer):
 
     def visualize(self, instance_path, timed):
         logging.info("Preprocess Instance")
-        print("get visual")
+        print("Generate visual")
 
         Path(TEMP_FOLDER).mkdir(parents=True, exist_ok=True)
         
         self.seed = 100
         random.seed(self.seed)
 
-        self.width = 30
-        self.height = 30
-        self.number_trains = 4
+        self.width = 22
+        self.height = self.width
+        self.number_trains = 3
 
         random_env = self.generate_rail(self.width, self.height, self.number_trains)
         env_image = self.render_env(random_env)
@@ -183,7 +183,7 @@ class VisualizerView(Visualizer):
             if show:
                 for time, place in agent_data["placements"].items():
                     (x, y, dir) = place
-                    image.content += (f'<text x="{(x) * x_spacer}" y="{(y+0.5) * y_spacer}"' 
+                    image.content += (f'<text x="{x * x_spacer}" y="{(y+0.5) * y_spacer}"'
                                       f'stroke="#{agent_color}" stroke-width="0.5", font-size="{font_size}px">{time}</text>')
 
 
