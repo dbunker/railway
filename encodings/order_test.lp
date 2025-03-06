@@ -1,4 +1,3 @@
-#include "common.lp".
 #include "track_type_decoding.lp".
 #include "graph/create_directed_graph.lp".
 

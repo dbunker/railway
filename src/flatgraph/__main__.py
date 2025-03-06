@@ -16,10 +16,11 @@ def main():
     parser.add_argument("instance")
     parser.add_argument("-t", "--timed", action="store_true")
     parser.add_argument("-v", "--visualize", action="store_true")
+    parser.add_argument("-p", "--provided", default="")
     args = parser.parse_args()
 
     if args.visualize:
-        visualize(args.instance, timed=args.timed)
+        visualize(args.instance, timed=args.timed, provided_instance=args.provided)
     else:
         compute_instance(args.instance, timed=args.timed)
 
