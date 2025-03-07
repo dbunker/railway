@@ -5,4 +5,4 @@ class Visualizer(ABC):
 
     @abstractmethod
     def visualize(self):
-        """Composes a partially ordered plan"""
+        """Runs instance solving and visualization"""

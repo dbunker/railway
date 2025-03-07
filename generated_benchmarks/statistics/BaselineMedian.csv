@@ -1,0 +1,5 @@
+,Variables,Constraints,Choices,Conflicts,Time
+SparseFew,53982,3230862,2635,3,4.269
+SparseMany,0,0,0,1,7.334
+DenseFew,137722,16759477,5396,3,22.56
+DenseMany,0,0,0,1,36.134

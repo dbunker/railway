@@ -1,0 +1,114 @@
+{
+  "Solver": "clingo version 5.7.1",
+  "Input": [
+    "encodings/rail_new_actions.lp","generated_benchmarks/sparse_few/instances/instance_09.lp"
+  ],
+  "Call": [
+    {
+
+    }
+  ],
+  "Result": "UNSATISFIABLE",
+  "Models": {
+    "Number": 0,
+    "More": "no"
+  },
+  "Calls": 1,
+  "Time": {
+    "Total": 2.793,
+    "Solve": 0.000,
+    "Model": 0.000,
+    "Unsat": 0.000,
+    "CPU": 2.791
+  },
+  "Stats": {
+    "Core": {
+      "Choices": 0,
+      "Conflicts": 1,
+      "Backtracks": 1,
+      "Backjumps": 0,
+      "Restarts": 0,
+      "RestartAvg": 0.000,
+      "RestartLast": 0
+    },
+    "More": {
+      "CPU": 0.000,
+      "Models": 0,
+      "Splits": 0,
+      "Problems": 0,
+      "AvgGPLength": 0.000,
+      "Lemma": {
+        "Sum": 0,
+        "Deleted": 0,
+        "Type": [
+          {
+            "Type": "Short",
+            "Sum": 0,
+            "Ratio": 0.000,
+            "Binary": 0,
+            "Ternary": 0
+          },
+          {
+            "Type": "Conflict",
+            "Sum": 0,
+            "AvgLen": 0.000
+          },
+          {
+            "Type": "Loop",
+            "Sum": 0,
+            "AvgLen": 0.000
+          },
+          {
+            "Type": "Other",
+            "Sum": 0,
+            "AvgLen": 0.000
+          }
+        ]
+      }
+    },
+    "Jumps": {
+      "Sum": 0,
+      "Max": 0,
+      "MaxExec": 0,
+      "Avg": 0.000,
+      "AvgExec": 0.000,
+      "Levels": 0,
+      "LevelsExec": 0,
+      "Bounded": {
+        "Sum": 0,
+        "Max": 0,
+        "Avg": 0.000,
+        "Levels": 0
+      }
+    },
+    "LP": {
+      "Rules": {
+        "Original": 88485,
+        "Final": 88485
+      },
+      "Atoms": 0,
+      "Bodies": {
+        "Original": 81152,
+        "Final": 81152
+      },
+      "Tight": "yes",
+      "Equivalences": {
+        "Sum": 0,
+        "Atom": 0,
+        "Body": 0,
+        "Other": 0
+      }
+    },
+    "Problem": {
+      "Variables": 0,
+      "Eliminated": 0,
+      "Frozen": 0,
+      "Constraints": {
+        "Sum": 0,
+        "Binary": 0,
+        "Ternary": 0
+      },
+      "AcycEdges": 0
+    }
+  }
+}

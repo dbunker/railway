@@ -129,7 +129,7 @@ class VisualizerView(Visualizer):
             match_string = (r"start" f"{LEFT_PAREN}" r"(?P<agent_id>\d+)" f"{COMMA}" 
                             f"{LEFT_PAREN}" r"(?P<y>\d+)" f"{COMMA}" r"(?P<x>\d+)" f"{RIGHT_PAREN}"
                             f"{COMMA}" r"(?P<time>\d+)" f"{COMMA}" r"(?P<dir>\w+)" f"{RIGHT_PAREN}" r"\.") 
-            
+
             match_pat = re.compile(match_string)
             find_match = match_pat.finditer(text)
 
@@ -260,7 +260,13 @@ class VisualizerView(Visualizer):
         self.height = self.width
         self.number_trains = 3
 
-        rail_generator = sparse_rail_generator()
+        rail_generator = sparse_rail_generator(
+            max_num_cities = 2, 
+            grid_mode = False, 
+            max_rails_between_cities = 2,
+            max_rail_pairs_in_city = 2, 
+            seed=None
+        )
 
         # Initialize the properties of the environment
         random_env = RailEnv(
@@ -439,4 +445,4 @@ class VisualizerView(Visualizer):
             check = ui.checkbox(f"Agent {agent_id}", on_change=lambda event: self.update_ui(event, image, agent_id, positions_dict))
             check.set_value(positions_dict[agent_id]["show"])
 
-        ui.run()
+        ui.run(reload=False)

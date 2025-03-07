@@ -1,0 +1,130 @@
+{
+  "Solver": "clingo version 5.7.1",
+  "Input": [
+    "encodings/order_test.lp","generated_benchmarks/sparse_few/instances/instance_07.lp"
+  ],
+  "Call": [
+    {
+
+    }
+  ],
+  "Result": "UNSATISFIABLE",
+  "Models": {
+    "Number": 0,
+    "More": "no"
+  },
+  "Calls": 1,
+  "Time": {
+    "Total": 0.166,
+    "Solve": 0.073,
+    "Model": 0.000,
+    "Unsat": 0.073,
+    "CPU": 0.165
+  },
+  "Stats": {
+    "Core": {
+      "Choices": 3365,
+      "Conflicts": 721,
+      "Backtracks": 1,
+      "Backjumps": 720,
+      "Restarts": 5,
+      "RestartAvg": 144.000,
+      "RestartLast": 104
+    },
+    "More": {
+      "CPU": 0.073,
+      "Models": 0,
+      "Splits": 0,
+      "Problems": 1,
+      "AvgGPLength": 0.000,
+      "Lemma": {
+        "Sum": 1884,
+        "Deleted": 0,
+        "Type": [
+          {
+            "Type": "Short",
+            "Sum": 823,
+            "Ratio": 43.684,
+            "Binary": 154,
+            "Ternary": 669
+          },
+          {
+            "Type": "Conflict",
+            "Sum": 720,
+            "AvgLen": 10.856
+          },
+          {
+            "Type": "Loop",
+            "Sum": 1164,
+            "AvgLen": 7.857
+          },
+          {
+            "Type": "Other",
+            "Sum": 0,
+            "AvgLen": 0.000
+          }
+        ]
+      }
+    },
+    "Jumps": {
+      "Sum": 720,
+      "Max": 93,
+      "MaxExec": 93,
+      "Avg": 4.521,
+      "AvgExec": 4.521,
+      "Levels": 3255,
+      "LevelsExec": 3255,
+      "Bounded": {
+        "Sum": 0,
+        "Max": 0,
+        "Avg": 0.000,
+        "Levels": 0
+      }
+    },
+    "LP": {
+      "Rules": {
+        "Original": 89355,
+        "Final": 89633,
+        "Choice": {
+          "Original": 1474,
+          "Final": 1474
+        },
+        "Acyc": {
+          "Original": 760,
+          "Final": 732
+        }
+      },
+      "Atoms": 31439,
+      "Bodies": {
+        "Original": 51397,
+        "Final": 51703,
+        "Count": {
+          "Original": 306,
+          "Final": 0
+        }
+      },
+      "Tight": "no",
+      "SCCs": 408,
+      "NonHcfs": 0,
+      "UfsNodes": 40698,
+      "NonHcfGammas": 0,
+      "Equivalences": {
+        "Sum": 9479,
+        "Atom": 2357,
+        "Body": 394,
+        "Other": 6728
+      }
+    },
+    "Problem": {
+      "Variables": 43168,
+      "Eliminated": 0,
+      "Frozen": 40502,
+      "Constraints": {
+        "Sum": 146680,
+        "Binary": 107370,
+        "Ternary": 31990
+      },
+      "AcycEdges": 732
+    }
+  }
+}
