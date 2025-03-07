@@ -220,6 +220,7 @@ class ComposerPartialOrder(Composer):
         }
         action_log = set()
         time = 0
+        any_train_moved_history = []
 
         while True:
             time += 1
@@ -239,6 +240,7 @@ class ComposerPartialOrder(Composer):
                     train.current_move = move
                 # check if next node can be entered
                 next_transition = self.get_next_transition(train)
+                logging.info(f"--- NEXT: {next_transition}")
                 can_enter = self.can_enter_node(train.train, next_transition.node, train_sims)
                 if can_enter:
                     # move train
@@ -265,7 +267,8 @@ class ComposerPartialOrder(Composer):
                     print(f"{ComposerPartialOrder._format_action(action[0], action[1], action[2])}.")
                 break
 
-            if not any_train_moved:
+            any_train_moved_history = ([any_train_moved] + any_train_moved_history)[:5]
+            if not any(any_train_moved_history):
                 print("TERMINATED: No more moving trains (Deadlock)")
                 break
 
@@ -292,11 +295,19 @@ class ComposerPartialOrder(Composer):
 
     def get_move_transition(self, move: MoveUndirected, direction: int) -> Transition:
         transitions = self.edges_real[move.node_from]
+        logging.info(f"--- DIR: {direction}")
+        logging.info(f"--- TO: {move.node_to}")
         for transition in transitions:
+            logging.info(f"--- T: {transition}")
             if transition.node == move.node_to and transition.direction_in == direction:
                 return transition
 
     def can_enter_node(self, train: Train, node: Node, trains: Dict[Train, TrainSimulator]) -> bool:
+        # Check other trains
+        for other_train in trains.values():
+            if other_train.position == node:
+                return False
+        # Check order
         if node not in self.order:
             return True
         results = []
