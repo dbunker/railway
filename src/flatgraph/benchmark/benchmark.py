@@ -236,7 +236,7 @@ class BenchmarkGenerator(Benchmarker):
 
             # Don't include invalid entries
             def validate(func):
-                return lambda lst: [x for x in lst if x != 0 and x != 1]
+                return lambda lst: func([x for x in lst if x != 0 and x != 1])
 
             # Mean
             df.map(validate(statistics.mean)).to_csv(f"{path_start}Mean.csv")
