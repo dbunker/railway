@@ -15,11 +15,11 @@
   },
   "Calls": 1,
   "Time": {
-    "Total": 0.519,
+    "Total": 0.486,
     "Solve": 0.000,
     "Model": 0.000,
     "Unsat": 0.000,
-    "CPU": 0.518
+    "CPU": 0.486
   },
   "Stats": {
     "Core": {
@@ -83,8 +83,8 @@
     },
     "LP": {
       "Rules": {
-        "Original": 895346,
-        "Final": 898091,
+        "Original": 906642,
+        "Final": 909387,
         "Choice": {
           "Original": 7284,
           "Final": 7284
@@ -96,8 +96,8 @@
       },
       "Atoms": 0,
       "Bodies": {
-        "Original": 565481,
-        "Final": 568253,
+        "Original": 569657,
+        "Final": 572429,
         "Count": {
           "Original": 2772,
           "Final": 0
@@ -105,14 +105,14 @@
       },
       "Tight": "yes",
       "Equivalences": {
-        "Sum": 24677,
-        "Atom": 7698,
-        "Body": 113,
-        "Other": 16866
+        "Sum": 30962,
+        "Atom": 10487,
+        "Body": 820,
+        "Other": 19655
       }
     },
     "Problem": {
-      "Variables": 46502,
+      "Variables": 46566,
       "Eliminated": 0,
       "Frozen": 2917,
       "Constraints": {

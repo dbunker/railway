@@ -15,11 +15,11 @@
   },
   "Calls": 1,
   "Time": {
-    "Total": 11.140,
+    "Total": 10.992,
     "Solve": 0.000,
     "Model": 0.000,
     "Unsat": 0.000,
-    "CPU": 11.104
+    "CPU": 10.970
   },
   "Stats": {
     "Core": {

@@ -21,11 +21,11 @@
   },
   "Calls": 1,
   "Time": {
-    "Total": 5.197,
-    "Solve": 0.005,
-    "Model": 0.005,
+    "Total": 4.880,
+    "Solve": 0.004,
+    "Model": 0.004,
     "Unsat": 0.000,
-    "CPU": 5.185
+    "CPU": 4.871
   },
   "Stats": {
     "Core": {
@@ -38,7 +38,7 @@
       "RestartLast": 3
     },
     "More": {
-      "CPU": 0.005,
+      "CPU": 0.004,
       "Models": 1,
       "AvgModel": 4206.000,
       "Splits": 0,

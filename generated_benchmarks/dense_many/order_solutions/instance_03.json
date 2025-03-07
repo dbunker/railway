@@ -15,11 +15,11 @@
   },
   "Calls": 1,
   "Time": {
-    "Total": 0.755,
+    "Total": 0.772,
     "Solve": 0.000,
     "Model": 0.000,
     "Unsat": 0.000,
-    "CPU": 0.755
+    "CPU": 0.771
   },
   "Stats": {
     "Core": {
@@ -83,48 +83,48 @@
     },
     "LP": {
       "Rules": {
-        "Original": 896698,
-        "Final": 899411,
+        "Original": 907962,
+        "Final": 910621,
         "Choice": {
           "Original": 7284,
           "Final": 7284
         },
         "Acyc": {
           "Original": 2928,
-          "Final": 2869
+          "Final": 2815
         }
       },
-      "Atoms": 136674,
+      "Atoms": 139554,
       "Bodies": {
-        "Original": 566985,
-        "Final": 569757,
+        "Original": 571153,
+        "Final": 573925,
         "Count": {
           "Original": 2772,
           "Final": 0
         }
       },
       "Tight": "no",
-      "SCCs": 1584,
+      "SCCs": 1679,
       "NonHcfs": 0,
-      "UfsNodes": 338225,
+      "UfsNodes": 335855,
       "NonHcfGammas": 0,
       "Equivalences": {
-        "Sum": 65118,
-        "Atom": 9211,
-        "Body": 1507,
-        "Other": 54400
+        "Sum": 71673,
+        "Atom": 12041,
+        "Body": 2200,
+        "Other": 57432
       }
     },
     "Problem": {
-      "Variables": 354236,
+      "Variables": 352925,
       "Eliminated": 0,
-      "Frozen": 337248,
+      "Frozen": 334781,
       "Constraints": {
-        "Sum": 1422975,
-        "Binary": 1077533,
-        "Ternary": 279096
+        "Sum": 1418319,
+        "Binary": 1075711,
+        "Ternary": 277509
       },
-      "AcycEdges": 2869
+      "AcycEdges": 2815
     }
   }
 }
