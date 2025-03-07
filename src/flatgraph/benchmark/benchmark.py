@@ -234,14 +234,18 @@ class BenchmarkGenerator(Benchmarker):
             self.create_parents(path)
             df.to_csv(f"{path_start}.csv")
 
-            # mean
-            df.map(statistics.mean).to_csv(f"{path_start}Mean.csv")
-            
-            # median
-            df.map(statistics.median).to_csv(f"{path_start}Median.csv")
+            # Don't include invalid entries
+            def validate(func):
+                return lambda lst: [x for x in lst if x != 0 and x != 1]
 
-            # stdev
-            df.map(statistics.stdev).to_csv(f"{path_start}StdDev.csv")
+            # Mean
+            df.map(validate(statistics.mean)).to_csv(f"{path_start}Mean.csv")
+            
+            # Median
+            df.map(validate(statistics.median)).to_csv(f"{path_start}Median.csv")
+
+            # Stdev
+            df.map(validate(statistics.stdev)).to_csv(f"{path_start}StdDev.csv")
 
 
     # Generate environment
@@ -368,5 +372,5 @@ class BenchmarkGenerator(Benchmarker):
 
         # Add "0" for all results
         print(f'Solving {instance_path} ...')
-        subprocess.call(["clingo", encoding_file, instance_path, "--outf=2", '--stats', '2'], stdout=out_file)
+        subprocess.call(["clingo", encoding_file, instance_path, "--outf=2", '--stats'], stdout=out_file)
 
