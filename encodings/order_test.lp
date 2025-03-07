@@ -19,6 +19,9 @@ spawn(ID,U) :- node_start(U,ID).
 :- spawn(ID,U), move(ID,_,U).
 :- goal(ID,(X,Y)), move(ID,((X,Y),_),_).
 
+% No move cycles
+:- move(ID,U,((X,Y),_)), move(ID,W,((X,Y),_)), U!=W.
+
 % Enforce Start and End
 :- spawn(ID,((X,Y),DIR)), not goal(ID,(X,Y)), not move(ID,((X,Y),DIR),_).
 :- goal(ID,(X,Y)), not spawn(ID,((X,Y),_)), not move(ID,_,((X,Y),_)).
