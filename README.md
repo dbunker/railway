@@ -18,13 +18,51 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Example Usage
+## Flatgraph Usage
 
-`flatgraph benchmarks/crossing.lp -t`
+```
+flatgraph benchmarks/crossing.lp -t
+```
+
++ This will run the ordering encoding on `benchmarks/crossing.lp` and return the actions.
+
+## Benchmark Generation
+
+```
+flatgraph 0 -g
+```
+
++ This generates random Flatland environments associated with sparse and dence environments with few and many trains and puts them into [benchmarks](./generated_benchmarks).
+
+```
+flatgraph 0 -r
+```
+
++ This runs and gets statistics for all [generated benchmarks](./generated_benchmarks) using the baseline encoding and puts them into [solutions](./generated_benchmarks/solutions). Also runs the ordering encoding and puts them into [order_solutions](./generated_benchmarks/order_solutions).
+
+```
+flatgraph 0 -s
+```
+
++ This aggregates the statistics from [generated benchmarks](./generated_benchmarks).
+
+## Visualization
+
+```
+flatgraph 0 -v
+```
+
++ This generates and solves a randomly generated Flatland environment.
+
+```
+flatgraph 0 -v -p benchmarks/crossing.lp
+```
+
++ This visualizes and solves for the provided instance, converting it to a Flatland environment.
 
 ## Benchmarks
 
-+ All benchmarks and their results can be found [here](./benchmarks)
++ Benchmarks and their results can be found in [benchmarks](./benchmarks) and [benchmarks](./generated_benchmarks)
 
 ## Environment
 
