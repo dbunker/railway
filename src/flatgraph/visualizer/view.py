@@ -94,7 +94,6 @@ class VisualizerView(Visualizer):
         Path(TEMP_FOLDER).mkdir(parents=True, exist_ok=True)
         
         self.seed = 100
-        random.seed(self.seed)
 
         if provided_instance == '':
             random_env = self.generate_random_rail()
@@ -120,6 +119,9 @@ class VisualizerView(Visualizer):
 
         with open(provided_instance, "r") as output:
             text = output.read()
+
+            # Remove comments
+            text = re.sub(r'%.*(\n|$)', r'\1', text)
 
             LEFT_PAREN = r"\s*\(\s*"
             RIGHT_PAREN = r"\s*\)\s*"
@@ -215,6 +217,7 @@ class VisualizerView(Visualizer):
         rail_generator = rail_from_grid_transition_map(grid_map)
 
         # Initialize the properties of the environment
+        # random_seed=self.seed
         random_env = RailEnv(
             width=self.width,
             height=self.height,
@@ -223,7 +226,6 @@ class VisualizerView(Visualizer):
             number_of_agents=self.number_trains,
             remove_agents_at_target=True,
             obs_builder_object=DefaultObservationBuilder(),
-            random_seed=self.seed
         )
 
         # Call reset() to initialize the environment
@@ -256,19 +258,20 @@ class VisualizerView(Visualizer):
     # Generate environment
     def generate_random_rail(self):
 
-        self.width = 22
+        self.width = 26
         self.height = self.width
         self.number_trains = 3
 
+        # Can use seed=self.seed
         rail_generator = sparse_rail_generator(
             max_num_cities = 2, 
             grid_mode = False, 
-            max_rails_between_cities = 2,
+            max_rails_between_cities = 3,
             max_rail_pairs_in_city = 2, 
-            seed=None
         )
 
         # Initialize the properties of the environment
+        # Can use random_seed=self.seed
         random_env = RailEnv(
             width=self.width,
             height=self.height,
@@ -276,7 +279,6 @@ class VisualizerView(Visualizer):
             rail_generator=rail_generator,
             line_generator=sparse_line_generator(),
             obs_builder_object=GlobalObsForRailEnv(),
-            random_seed=self.seed
         )
 
         # Call reset() to initialize the environment
